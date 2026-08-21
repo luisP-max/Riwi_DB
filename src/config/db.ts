@@ -50,14 +50,14 @@ const createTablesSQL = `
 export const ConnectDB = async (): Promise<void> => {
     try {
         const client = await pool.connect();
-        console.log('[Database] ¡Conexión nativa a PostgreSQL establecida con éxito!');
+        console.log('[Database] ¡Conexión establecida con éxito!');
         
         await client.query(createTablesSQL);
         console.log('[Database] Tablas relacionales (TLs, Rutas, Clanes, Coders) verificadas.');
         
         client.release();
     } catch (error) {
-        console.error('[Database Error] Fallo crítico al conectar con PostgreSQL:', error);
+        console.error('[Database Error] Fallo crítico al conectar:', error);
         process.exit(1);
     }
 };
