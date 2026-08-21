@@ -3,7 +3,7 @@ version: '3.8'
 services:
   db:
     image: postgres:17
-    container_name: centurion_riwi_postgres_nuevo
+    container_name: riwi
     restart: always
     environment:
       POSTGRES_USER: luis1
