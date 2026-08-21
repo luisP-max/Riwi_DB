@@ -5,6 +5,7 @@ import { ConnectDB } from './config/db.js';
 import routerTL from './routes/tl.router.js';
 import routerRuta from './routes/ruta.router.js';
 import routerClan from './routes/clan.router.js';
+import routerCoder from './routes/coder.router.js';
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -18,6 +19,7 @@ app.get('/', (req, res) => {
 app.use('/api/tls', routerTL);
 app.use('/api/rutas', routerRuta);
 app.use('/api/clanes', routerClan);
+app.use('/api/coders', routerCoder);
 
 app.listen(Number(PORT), async () => {
     try {
