@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:17
+    container_name: centurion_riwi_postgres_nuevo
+    restart: always
+    environment:
+      POSTGRES_USER: luis1
+      POSTGRES_PASSWORD: '5678'
+      POSTGRES_DB: riwi_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
