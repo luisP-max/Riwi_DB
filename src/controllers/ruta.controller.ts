@@ -42,6 +42,11 @@ export const createRuta = async (req: Request, res: Response) => {
         const result = await pool.query(query, values);
         res.status(201).json({ message: 'Ruta creada y asignada al Trainer con éxito', ruta: result.rows[0] });
     } catch (error) {
-        res.status(500).json({ message: 'Error al registrar la ruta', error });
-    }
+    console.error("❌ ERROR DETALLADO EN POSTGRESQL (RUTAS):", error);
+    
+    return res.status(500).json({ 
+        message: 'Error al registrar la ruta', 
+        error: error instanceof Error ? error.message : error 
+    });
+}
 };
