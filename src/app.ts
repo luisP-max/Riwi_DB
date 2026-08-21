@@ -6,6 +6,7 @@ import routerTL from './routes/tl.router.js';
 import routerRuta from './routes/ruta.router.js';
 import routerClan from './routes/clan.router.js';
 import routerCoder from './routes/coder.router.js';
+import routerSala from './routes/sala.router.js';
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -20,6 +21,7 @@ app.use('/api/tls', routerTL);
 app.use('/api/rutas', routerRuta);
 app.use('/api/clanes', routerClan);
 app.use('/api/coders', routerCoder);
+app.use('/api/salas', routerSala);
 
 app.listen(Number(PORT), async () => {
     try {

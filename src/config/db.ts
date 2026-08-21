@@ -16,7 +16,7 @@ export const ConnectDB = async (): Promise<void> => {
         const client = await pool.connect();
         console.log('[Database] ¡Conexión nativa a PostgreSQL establecida con éxito!');
         
-        // Ejecutamos cada tabla por separado para que SQL no rechace el bloque
+        // 1. CREACIÓN DE LA TABLA DE TLs
         await client.query(`
             CREATE TABLE IF NOT EXISTS tls (
                 id SERIAL PRIMARY KEY,
@@ -26,6 +26,7 @@ export const ConnectDB = async (): Promise<void> => {
             );
         `);
 
+        // 2. CREACIÓN DE LA TABLA DE RUTAS
         await client.query(`
             CREATE TABLE IF NOT EXISTS rutas (
                 id SERIAL PRIMARY KEY,
@@ -37,16 +38,29 @@ export const ConnectDB = async (): Promise<void> => {
             );
         `);
 
+        // 3. CREACIÓN DE LA TABLA DE SALAS
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS salas (
+                id SERIAL PRIMARY KEY,
+                nombre VARCHAR(50) UNIQUE NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+
+        // 4. CREACIÓN DE LA TABLA DE CLANES CON ENLACE A SALAS
         await client.query(`
             CREATE TABLE IF NOT EXISTS clanes (
                 id SERIAL PRIMARY KEY,
                 nombre VARCHAR(100) UNIQUE NOT NULL,
                 ruta_id INT NOT NULL,
+                sala_id INT, -- <-- Llave foránea para la sala física
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (ruta_id) REFERENCES rutas(id) ON DELETE CASCADE
+                FOREIGN KEY (ruta_id) REFERENCES rutas(id) ON DELETE CASCADE,
+                FOREIGN KEY (sala_id) REFERENCES salas(id) ON DELETE SET NULL
             );
         `);
 
+        // 5. CREACIÓN DE LA TABLA DE CODERS
         await client.query(`
             CREATE TABLE IF NOT EXISTS coders (
                 id SERIAL PRIMARY KEY,
@@ -59,7 +73,7 @@ export const ConnectDB = async (): Promise<void> => {
             );
         `);
 
-        console.log('[Database] Las 4 tablas relacionales se crearon físicamente con éxito.');
+        console.log('[Database] Las 5 tablas relacionales oficiales se crearon físicamente con éxito.');
         client.release();
     } catch (error) {
         console.error('[Database Error] Fallo crítico al inicializar las tablas:', error);
