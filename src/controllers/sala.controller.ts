@@ -1,18 +1,17 @@
 import { type Request, type Response } from 'express';
 import { pool } from '../config/db.js';
 
-// 1. OBTENER TODAS LAS SALAS
+// OBTENER TODAS LAS SALAS
 export const getSalas = async (req: Request, res: Response) => {
     try {
         const result = await pool.query('SELECT * FROM salas ORDER BY id ASC;');
         return res.json(result.rows);
     } catch (error) {
-        console.error("❌ ERROR EN POSTGRESQL (GET SALAS):", error);
+        console.error("ERROR EN POSTGRESQL (GET SALAS):", error);
         return res.status(500).json({ message: 'Error al consultar las salas', error });
     }
 };
 
-// 2. CREAR UNA NUEVA SALA (SALA UNO, DOS, TRES)
 export const createSala = async (req: Request, res: Response) => {
     try {
         const { nombre } = req.body;
@@ -25,7 +24,7 @@ export const createSala = async (req: Request, res: Response) => {
         const result = await pool.query(query, [nombre]);
         return res.status(201).json({ message: 'Sala creada con éxito en PostgreSQL', sala: result.rows[0] });
     } catch (error) {
-        console.error("❌ ERROR EN POSTGRESQL (POST SALA):", error);
+        console.error("ERROR EN POSTGRESQL (POST SALA):", error);
         if (error instanceof Error && error.message.includes('unique constraint')) {
             return res.status(400).json({ message: 'Error: El nombre de la sala ya se encuentra registrado.' });
         }
@@ -33,7 +32,7 @@ export const createSala = async (req: Request, res: Response) => {
     }
 };
 
-// 3. ACTUALIZAR UNA SALA POR ID
+// actualizar sala por ID
 export const updateSala = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
@@ -52,7 +51,7 @@ export const updateSala = async (req: Request, res: Response) => {
 
         return res.json({ message: 'Sala actualizada con éxito', sala: result.rows[0] });
     } catch (error) {
-        console.error("❌ ERROR EN POSTGRESQL (PUT SALA):", error);
+        console.error(" ERROR EN POSTGRESQL (PUT SALA):", error);
         if (error instanceof Error && error.message.includes('unique constraint')) {
             return res.status(400).json({ message: 'Error: Ese nombre de sala ya está ocupado por otra.' });
         }
@@ -60,7 +59,7 @@ export const updateSala = async (req: Request, res: Response) => {
     }
 };
 
-// 4. ELIMINAR UNA SALA POR ID
+// 4. eliminar sala por ID
 export const deleteSala = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
@@ -72,9 +71,9 @@ export const deleteSala = async (req: Request, res: Response) => {
             return res.status(404).json({ message: `Error: La sala con ID ${id} no existe.` });
         }
 
-        return res.json({ message: 'Sala eliminada correctamente de la base de datos' });
+        return res.json({ message: 'Sala eliminada correctamente' });
     } catch (error) {
-        console.error("❌ ERROR EN POSTGRESQL (DELETE SALA):", error);
+        console.error("ERROR EN POSTGRESQL (DELETE SALA):", error);
         return res.status(500).json({ message: 'Error al eliminar la sala', error });
     }
 };
