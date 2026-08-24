@@ -14,12 +14,15 @@ export const pool = new Pool({
 export const ConnectDB = async (): Promise<void> => {
     try {
         const client = await pool.connect();
-        console.log('[Database] ¡Conexión nativa establecida con éxito!');
+        console.log('[Database] Conexion nativa establecida con exito!');
         
+        // Habilitar extension oficial para generar identificadores UUID aleatorios
+        await client.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`);
+
         // 1. TABLA DE CIUDADES (MEDELLÍN Y BARRANQUILLA)
         await client.query(`
             CREATE TABLE IF NOT EXISTS ciudades (
-                id SERIAL PRIMARY KEY,
+                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 nombre VARCHAR(100) UNIQUE NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
@@ -28,10 +31,10 @@ export const ConnectDB = async (): Promise<void> => {
         // 2. TABLA DE PROFESORES CON ENLACE A CIUDAD
         await client.query(`
             CREATE TABLE IF NOT EXISTS tls (
-                id SERIAL PRIMARY KEY,
+                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 nombre VARCHAR(100) NOT NULL,
                 cargo VARCHAR(100) NOT NULL,
-                ciudad_id INT, -- <-- Llave foránea para la ciudad
+                ciudad_id UUID, -- <-- Cambio a tipo UUID
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (ciudad_id) REFERENCES ciudades(id) ON DELETE SET NULL
             );
@@ -40,10 +43,10 @@ export const ConnectDB = async (): Promise<void> => {
         // 3. TABLA RUTAS
         await client.query(`
             CREATE TABLE IF NOT EXISTS rutas (
-                id SERIAL PRIMARY KEY,
+                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 nombre VARCHAR(100) UNIQUE NOT NULL,
                 tipo VARCHAR(20) NOT NULL CHECK (tipo IN ('basica', 'avanzada')),
-                tl_id INT NOT NULL,
+                tl_id UUID NOT NULL, -- <-- Cambio a tipo UUID
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (tl_id) REFERENCES tls(id) ON DELETE CASCADE
             );
@@ -52,7 +55,7 @@ export const ConnectDB = async (): Promise<void> => {
         // 4. TABLA DE SALAS
         await client.query(`
             CREATE TABLE IF NOT EXISTS salas (
-                id SERIAL PRIMARY KEY,
+                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 nombre VARCHAR(50) UNIQUE NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
@@ -61,35 +64,35 @@ export const ConnectDB = async (): Promise<void> => {
         // 5. TABLA DE CLANES CON ENLACE A SALAS
         await client.query(`
             CREATE TABLE IF NOT EXISTS clanes (
-                id SERIAL PRIMARY KEY,
+                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 nombre VARCHAR(100) UNIQUE NOT NULL,
-                ruta_id INT NOT NULL,
-                sala_id INT,
+                ruta_id UUID NOT NULL, -- <-- Cambio a tipo UUID
+                sala_id UUID,          -- <-- Cambio a tipo UUID
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (ruta_id) REFERENCES rutas(id) ON DELETE CASCADE,
                 FOREIGN KEY (sala_id) REFERENCES salas(id) ON DELETE SET NULL
             );
         `);
 
-        // 6. TABLA DE ESTUDIANTES CON ENLACE A CIUDAD
+        // 6. TABLA DE ESTUDIANTES CON ENLACE A CIUDAD Y CLAN
         await client.query(`
             CREATE TABLE IF NOT EXISTS coders (
-                id SERIAL PRIMARY KEY,
+                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 nombre VARCHAR(100) NOT NULL,
                 email VARCHAR(150) UNIQUE NOT NULL,
                 estado VARCHAR(20) NOT NULL CHECK (estado IN ('activo', 'inactivo', 'graduado')),
-                clan_id INT NOT NULL,
-                ciudad_id INT, -- <-- Llave foránea para la ciudad
+                clan_id UUID NOT NULL,   -- <-- Cambio a tipo UUID
+                ciudad_id UUID,         -- <-- Cambio a tipo UUID
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (clan_id) REFERENCES clanes(id) ON DELETE CASCADE,
                 FOREIGN KEY (ciudad_id) REFERENCES ciudades(id) ON DELETE SET NULL
             );
         `);
 
-        console.log('[Database] tablas relacionales se crearon físicamente con éxito.');
+        console.log('[Database] Tablas relacionales con seguridad UUID se crearon fisicamente con exito.');
         client.release();
     } catch (error) {
-        console.error('[Database Error] Fallo crítico al inicializar las tablas:', error);
+        console.error('[Database Error] Fallo critico al inicializar las tablas:', error);
         process.exit(1);
     }
 };
