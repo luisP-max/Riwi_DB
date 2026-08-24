@@ -80,9 +80,10 @@ export const ConnectDB = async (): Promise<void> => {
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 nombre VARCHAR(100) NOT NULL,
                 email VARCHAR(150) UNIQUE NOT NULL,
+                telefono VARCHAR(10) NOT NULL CHECK (telefono ~ '^3[0-9]{9}$'), -- <-- Validación estricta Colombia
                 estado VARCHAR(20) NOT NULL CHECK (estado IN ('activo', 'inactivo', 'graduado')),
-                clan_id UUID NOT NULL,   -- <-- Cambio a tipo UUID
-                ciudad_id UUID,         -- <-- Cambio a tipo UUID
+                clan_id UUID NOT NULL,
+                ciudad_id UUID,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (clan_id) REFERENCES clanes(id) ON DELETE CASCADE,
                 FOREIGN KEY (ciudad_id) REFERENCES ciudades(id) ON DELETE SET NULL

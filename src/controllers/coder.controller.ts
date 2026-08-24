@@ -19,12 +19,19 @@ export const getCoders = async (req: Request, res: Response) => {
 
 export const createCoder = async (req: Request, res: Response) => {
     try {
-        const body = req.body as { nombre: string; email: string; estado: string; clan_id: number };
-        const { nombre, email, estado, clan_id } = body;
+        const body = req.body as { nombre: string; email: string; telefono: string; estado: string; clan_id: string };
+        const { nombre, email, telefono, estado, clan_id } = body;
 
-        if (!nombre || !email || !estado || !clan_id) {
-            return res.status(400).json({ message: 'Error: Los campos nombre, email, estado y clan_id son obligatorios.' });
+        if (!nombre || !email || !telefono || !estado || !clan_id) {
+            return res.status(400).json({ message: 'Error: Los campos nombre, email, telefono, estado y clan_id son obligatorios.' });
         }
+
+        const telefonoRegex = /^3[0-9]{9}$/;
+        if (!telefonoRegex.test(telefono)) {
+            return res.status(400).json({ 
+        message: 'Error de formato: El telefono debe ser un numero movil colombiano valido de exactamente 10 digitos y comenzar con 3.' 
+    });
+}
 
         if (estado !== 'activo' && estado !== 'inactivo' && estado !== 'graduado') {
             return res.status(400).json({ message: "Error: El estado debe ser estrictamente 'activo', 'inactivo' o 'graduado'." });
@@ -68,8 +75,8 @@ export const createCoder = async (req: Request, res: Response) => {
             }
         }
 
-        const query = 'INSERT INTO coders (nombre, email, estado, clan_id) VALUES ($1, $2, $3, $4) RETURNING *;';
-        const values = [nombre, email, estado, clan_id];
+        const query = 'INSERT INTO coders (nombre, email, telefono, estado, clan_id) VALUES ($1, $2, $3, $4, $5) RETURNING *;';
+        const values = [nombre, email, telefono, estado, clan_id];
 
         const result = await pool.query(query, values);
         return res.status(201).json({ message: 'Coder registrado y asignado a su sala con éxito.', coder: result.rows[0] });
