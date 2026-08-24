@@ -59,7 +59,7 @@ export const updateSala = async (req: Request, res: Response) => {
     }
 };
 
-// 4. eliminar sala por ID
+// eliminar sala por ID
 export const deleteSala = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;

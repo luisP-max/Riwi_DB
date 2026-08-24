@@ -10,6 +10,8 @@ export const getTLs = async (req: Request, res: Response) => {
     }
 };
 
+// aqui creamos el nuevo TL en riwi, tira el error y te tire el aviso de error los campos son obligatorios 
+
 export const createTL = async (req: Request, res: Response) => {
     try {
         const { nombre, cargo } = req.body;
