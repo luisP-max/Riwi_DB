@@ -34,7 +34,7 @@ export const ConnectDB = async (): Promise<void> => {
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 nombre VARCHAR(100) NOT NULL,
                 cargo VARCHAR(100) NOT NULL,
-                ciudad_id UUID, -- <-- Cambio a tipo UUID
+                ciudad_id UUID,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (ciudad_id) REFERENCES ciudades(id) ON DELETE SET NULL
             );
@@ -46,7 +46,7 @@ export const ConnectDB = async (): Promise<void> => {
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 nombre VARCHAR(100) UNIQUE NOT NULL,
                 tipo VARCHAR(20) NOT NULL CHECK (tipo IN ('basica', 'avanzada')),
-                tl_id UUID NOT NULL, -- <-- Cambio a tipo UUID
+                tl_id UUID NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (tl_id) REFERENCES tls(id) ON DELETE CASCADE
             );
@@ -66,21 +66,21 @@ export const ConnectDB = async (): Promise<void> => {
             CREATE TABLE IF NOT EXISTS clanes (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 nombre VARCHAR(100) UNIQUE NOT NULL,
-                ruta_id UUID NOT NULL, -- <-- Cambio a tipo UUID
-                sala_id UUID,          -- <-- Cambio a tipo UUID
+                ruta_id UUID NOT NULL,
+                sala_id UUID,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (ruta_id) REFERENCES rutas(id) ON DELETE CASCADE,
                 FOREIGN KEY (sala_id) REFERENCES salas(id) ON DELETE SET NULL
             );
         `);
 
-        // 6. TABLA DE ESTUDIANTES CON ENLACE A CIUDAD Y CLAN
+        // 6. TABLA DE ESTUDIANTES CON ENLACE A CIUDAD, CLAN Y TELÉFONO COLOMBIANO
         await client.query(`
             CREATE TABLE IF NOT EXISTS coders (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 nombre VARCHAR(100) NOT NULL,
                 email VARCHAR(150) UNIQUE NOT NULL,
-                telefono VARCHAR(10) NOT NULL CHECK (telefono ~ '^3[0-9]{9}$'), -- <-- Validación estricta Colombia
+                telefono VARCHAR(10) NOT NULL CHECK (telefono ~ '^3[0-9]{9}$'),
                 estado VARCHAR(20) NOT NULL CHECK (estado IN ('activo', 'inactivo', 'graduado')),
                 clan_id UUID NOT NULL,
                 ciudad_id UUID,
@@ -90,7 +90,7 @@ export const ConnectDB = async (): Promise<void> => {
             );
         `);
 
-        console.log('[Database] Tablas relacionales con seguridad UUID se crearon fisicamente con exito.');
+        console.log('[Database] Tablas con UUID y telefono se crearon fisicamente con exito.');
         client.release();
     } catch (error) {
         console.error('[Database Error] Fallo critico al inicializar las tablas:', error);
