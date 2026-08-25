@@ -21,8 +21,10 @@ app.get('/', (req, res) => {
     res.json({ mensaje: "Servidor respondiendo de forma nativa!" });
 });
 
+// El login y registro quedan publicos para que cualquiera pueda crear su cuenta
 app.use('/api/auth', routerAuth);
 
+// A partir de aqui, las rutas quedan estrictamente protegidas bajo llave:
 app.use('/api/ciudades', checkAuth, routerCiudad);
 app.use('/api/tls', checkAuth, routerTL);
 app.use('/api/rutas', checkAuth, routerRuta);
