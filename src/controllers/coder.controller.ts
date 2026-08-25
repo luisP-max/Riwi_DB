@@ -12,8 +12,8 @@ export const getCoders = async (req: Request, res: Response) => {
         const result = await pool.query(query);
         return res.json(result.rows);
     } catch (error) {
-        console.error("ERROR EN POSTGRESQL (GET CODERS):", error);
-        return res.status(500).json({ message: 'Error al consultar los estudiantes', error });
+        console.error("ERROR EN MOSTRAR EL CODER:", error);
+        return res.status(500).json({ message: 'Error al consultar los coders', error });
     }
 };
 
@@ -29,7 +29,7 @@ export const createCoder = async (req: Request, res: Response) => {
         const telefonoRegex = /^3[0-9]{9}$/;
         if (!telefonoRegex.test(telefono)) {
             return res.status(400).json({ 
-        message: 'Error de formato: El telefono debe ser un numero movil colombiano valido de exactamente 10 digitos y comenzar con 3.' 
+        message: 'Error de formato: El telefono debe ser un numero movil colombiano valido de exactamente de 10 digitos.' 
     });
 }
 

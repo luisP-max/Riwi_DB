@@ -16,7 +16,6 @@ export const ConnectDB = async (): Promise<void> => {
         const client = await pool.connect();
         console.log('[Database] Conexion nativa establecida con exito!');
         
-        // Habilitar extension oficial para generar identificadores UUID aleatorios
         await client.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`);
 
         // 1. TABLA DE CIUDADES (MEDELLÍN Y BARRANQUILLA)
@@ -28,7 +27,7 @@ export const ConnectDB = async (): Promise<void> => {
             );
         `);
 
-        // 2. TABLA DE PROFESORES CON ENLACE A CIUDAD
+        // 2. TABLA DE TLs
         await client.query(`
             CREATE TABLE IF NOT EXISTS tls (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -74,7 +73,7 @@ export const ConnectDB = async (): Promise<void> => {
             );
         `);
 
-        // 6. TABLA DE ESTUDIANTES CON ENLACE A CIUDAD, CLAN Y TELÉFONO COLOMBIANO
+        // 6. TABLA DE ESTUDIANTES CON ENLACE A CIUDAD, CLAN Y TELÉFONO
         await client.query(`
             CREATE TABLE IF NOT EXISTS coders (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
