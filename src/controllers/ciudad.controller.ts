@@ -4,7 +4,7 @@ import { pool } from '../config/db.js';
 //obtenemos y mostramos las ciudades
 export const getCiudades = async (req: Request, res: Response) => {
     try {
-        const result = await pool.query('SELECT * FROM ciudades ORDER BY id ASC;');
+        const result = await pool.query('SELECT * FROM ciudades ORDER BY nombre ASC;');
         return res.json(result.rows);
     } catch (error) {
         return res.status(500).json({ message: 'Error al consultar las ciudades', error });
