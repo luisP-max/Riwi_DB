@@ -18,7 +18,18 @@ export const ConnectDB = async (): Promise<void> => {
         
         await client.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`);
 
-        // 1. TABLA DE CIUDADES (MEDELLÍN Y BARRANQUILLA)
+        // 1. TABLA DE CONTROL DE ACCESO (AUTENTICACIÓN)
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS usuarios (
+                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                nombre VARCHAR(100) NOT NULL,
+                email VARCHAR(150) UNIQUE NOT NULL,
+                password VARCHAR(255) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+
+        // 2. TABLA DE CIUDADES (MEDELLÍN Y BARRANQUILLA)
         await client.query(`
             CREATE TABLE IF NOT EXISTS ciudades (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -27,7 +38,7 @@ export const ConnectDB = async (): Promise<void> => {
             );
         `);
 
-        // 2. TABLA DE TLs
+        // 3. TABLA DE TLs
         await client.query(`
             CREATE TABLE IF NOT EXISTS tls (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -39,7 +50,7 @@ export const ConnectDB = async (): Promise<void> => {
             );
         `);
 
-        // 3. TABLA RUTAS
+        // 4. TABLA RUTAS
         await client.query(`
             CREATE TABLE IF NOT EXISTS rutas (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -51,7 +62,7 @@ export const ConnectDB = async (): Promise<void> => {
             );
         `);
 
-        // 4. TABLA DE SALAS
+        // 5. TABLA DE SALAS
         await client.query(`
             CREATE TABLE IF NOT EXISTS salas (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -60,7 +71,7 @@ export const ConnectDB = async (): Promise<void> => {
             );
         `);
 
-        // 5. TABLA DE CLANES CON ENLACE A SALAS
+        // 6. TABLA DE CLANES CON ENLACE A SALAS
         await client.query(`
             CREATE TABLE IF NOT EXISTS clanes (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -73,7 +84,7 @@ export const ConnectDB = async (): Promise<void> => {
             );
         `);
 
-        // 6. TABLA DE ESTUDIANTES CON ENLACE A CIUDAD, CLAN Y TELÉFONO
+        // 7. TABLA DE ESTUDIANTES CON ENLACE A CIUDAD, CLAN Y TELÉFONO
         await client.query(`
             CREATE TABLE IF NOT EXISTS coders (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
