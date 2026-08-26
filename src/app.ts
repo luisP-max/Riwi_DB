@@ -30,7 +30,6 @@ app.use('/api/tls', checkAuth, routerTL);
 app.use('/api/rutas', checkAuth, routerRuta);
 app.use('/api/clanes', checkAuth, routerClan);
 app.use('/api/coders', checkAuth, routerCoder);
-app.use('/api/ciudades', routerCiudad);
 app.use('/api/salas', checkAuth, routerSala);
 
 
